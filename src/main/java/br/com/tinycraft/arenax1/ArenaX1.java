@@ -46,7 +46,7 @@ public class ArenaX1 extends JavaPlugin
         getServer().getScheduler().runTaskTimer(this, arenaExecutor, 20, 20);
         getServer().getScheduler().runTaskTimer(this, inviteManager, 20, 20);
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(arenaExecutor, config, gui), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(arenaExecutor, config, gui, language), this);
         getServer().getPluginManager().registerEvents(gui, this);
 
         getCommand("arenax1").setExecutor(commandManager);

@@ -4,6 +4,8 @@ import br.com.tinycraft.arenax1.ArenaConfig;
 import br.com.tinycraft.arenax1.arena.Arena;
 import br.com.tinycraft.arenax1.executor.ArenaExecutor;
 import br.com.tinycraft.arenax1.gui.GUI;
+import br.com.tinycraft.arenax1.language.Language;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import static org.bukkit.event.EventPriority.HIGHEST;
@@ -26,12 +28,14 @@ public class PlayerListener implements Listener
     private final ArenaExecutor arenaExecutor;
     private final GUI gui;
     private final int guiItem;
+    private final Language language;
 
-    public PlayerListener(ArenaExecutor arenaExecutor, ArenaConfig arenaConfig, GUI gui)
+    public PlayerListener(ArenaExecutor arenaExecutor, ArenaConfig arenaConfig, GUI gui, Language language)
     {
         this.arenaExecutor = arenaExecutor;
         this.gui = gui;
         this.guiItem = arenaConfig.getGuiItem();
+        this.language = language;
     }
 
     @EventHandler
@@ -60,9 +64,24 @@ public class PlayerListener implements Listener
     @EventHandler(priority = HIGHEST)
     public void onPlayerDamageEvent(EntityDamageByEntityEvent e)
     {
-        if (e.getDamager() instanceof Player)
+        if (e.getEntity() instanceof Player)
         {
-            Player player = (Player) e.getDamager();
+
+            Player player = null;
+            if (e.getDamager() instanceof Player)
+            {
+                player = (Player) e.getDamager();
+            } else if (e.getDamager() instanceof Arrow)
+            {
+                Arrow arrow = (Arrow) e.getDamager();
+                if (arrow.getShooter() instanceof Player)
+                {
+                    player = (Player) arrow.getShooter();
+                }
+            } else
+            {
+                return;
+            }
 
             Arena arena = arenaExecutor.getPlayerArena(player, false);
 
@@ -73,7 +92,7 @@ public class PlayerListener implements Listener
 
             if (arena.isWaitinigToStart())
             {
-                player.sendMessage("§cEspere o duelo começar!");
+                player.sendMessage(language.getMessage("ErrorWaitDuelStart", new String[0]));
                 e.setCancelled(true);
             } else if (arena.isOcurring())
             {
@@ -98,7 +117,7 @@ public class PlayerListener implements Listener
 
             if (arena.isWaitinigToStart())
             {
-                player.sendMessage("§cEspere o duelo começar!");
+                player.sendMessage(language.getMessage("ErrorWaitDuelStart", new String[0]));
                 e.setCancelled(true);
             } else if (arena.isOcurring())
             {
@@ -126,7 +145,7 @@ public class PlayerListener implements Listener
 
         if (arenaExecutor.playerCommand(e.getPlayer()) && !e.getPlayer().isOp())
         {
-            e.getPlayer().sendMessage("§cComandos bloqueados aqui! Espere ou digite /suicide");
+            e.getPlayer().sendMessage(language.getMessage("ErrorCommandsBlocked", new String[0]));
             e.setCancelled(true);
         }
     }
