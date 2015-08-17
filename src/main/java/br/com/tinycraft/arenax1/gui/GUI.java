@@ -81,6 +81,7 @@ public class GUI implements Listener
         {
             return;
         }
+        e.setCancelled(true);
 
         if (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.SKULL_ITEM)
         {
@@ -114,6 +115,5 @@ public class GUI implements Listener
                 }
             }
         }
-        e.setCancelled(true);
     }
 }

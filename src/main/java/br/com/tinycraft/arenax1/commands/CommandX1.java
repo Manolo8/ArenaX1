@@ -119,7 +119,7 @@ public class CommandX1
     @CommandArena(command = "create",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
-            args = 1,
+            args = 2,
             usage = "§a/x1adm create [ArenaName]")
     public void create(Player author, String[] args)
     {
@@ -135,7 +135,7 @@ public class CommandX1
     @CommandArena(command = "remove",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
-            args = 1,
+            args = 2,
             usage = "§a/x1adm remove [ArenaName]")
     public void remove(Player author, String[] args)
     {
@@ -151,7 +151,7 @@ public class CommandX1
     @CommandArena(command = "pos1",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
-            args = 1,
+            args = 2,
             usage = "§a/x1adm pos1 [ArenaName]")
     public void pos1(Player author, String[] args)
     {
@@ -176,7 +176,7 @@ public class CommandX1
     @CommandArena(command = "pos2",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
-            args = 1,
+            args = 2,
             usage = "§a/x1adm pos2 [ArenaName]")
     public void pos2(Player author, String[] args)
     {

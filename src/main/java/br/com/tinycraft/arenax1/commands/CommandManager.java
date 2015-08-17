@@ -82,7 +82,8 @@ public class CommandManager implements CommandExecutor
             }
             if (args.length != annotation.args())
             {
-                player.sendMessage("§aUsage: " + annotation.usage());
+                player.sendMessage("§cUsage: " + annotation.usage());
+                return true;
             }
             try
             {
