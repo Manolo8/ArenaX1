@@ -1,0 +1,25 @@
+Config:
+  #Time before player is teleported
+  START_WAIT_TIME: 5
+  
+  #Time before one player death
+  ENDING_TIME: 10
+  
+  #Time to the arena close if any player death
+  DEFAULT_REMAINING_TIME: 500
+  
+  #Time to wait on duel accepted
+  DEFAULT_ACCEPTED_WAIT: 5
+  
+  #Time to invite expire
+  DEFAULT_EXPIRE_TIME: 60
+  
+  #Language PT-BR, EN-US -> Sorry, but english translation aren't 100% accurate
+  #If you can translate correctly, please send for me in the bukkit forums
+  #(I'm brazilian)
+  LANGUAGE: EN-US
+  
+  #GUI ITEM
+  GUI_ITEM: 283
+  #Dont change this, please
+  VERSION: 1.1
