@@ -1,6 +1,5 @@
 package br.com.tinycraft.arenax1;
 
-import br.com.tinycraft.arenax1.ArenaX1;
 import java.io.File;
 
 import org.bukkit.Bukkit;

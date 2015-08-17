@@ -49,7 +49,7 @@ public class ArenaExecutor extends BukkitRunnable
         while (i.hasNext())
         {
             Player player = i.next();
-            player.teleport(spawn);
+            player.teleport(arenaManager.getArenaLobby() == null ? spawn : arenaManager.getArenaLobby());
             i.remove();
         }
 

@@ -1,7 +1,7 @@
 author: Manolo8
 main: br.com.tinycraft.arenax1.ArenaX1
 name: ArenaX1
-version: 0.1
+version: 0.3
 commands:
   arenax1:
     aliases: [x1]
@@ -23,6 +23,7 @@ commands:
       §c/<command> remove [name] - remove an arena
       §c/<command> pos1 [name] - set the first spawn
       §c/<command> pos2 [name] - set the second spawn
+      §c/<command> setlobby - set lobby for all arenas
       §c/<command> list - List all arenas
 permissions:
   arenax1.user:

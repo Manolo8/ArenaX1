@@ -75,8 +75,8 @@ public class FlatFileData implements Data
                 Double.parseDouble(pos2[0]),
                 Double.parseDouble(pos2[1]),
                 Double.parseDouble(pos2[2]),
-                Float.parseFloat(pos1[3]),
-                Float.parseFloat(pos1[4]));
+                Float.parseFloat(pos2[3]),
+                Float.parseFloat(pos2[4]));
 
         Arena arena = new Arena(name, world, ps1, ps2);
 
@@ -110,5 +110,37 @@ public class FlatFileData implements Data
     public void saveToBase() throws Exception
     {
         config.save(arenas);
+    }
+
+    @Override
+    public Location loadLobby()
+    {
+        if (config.contains("ArenaLobby"))
+        {
+            String lobby[] = config.getString("ArenaLobby").split(" ");
+            return new Location(Bukkit.getWorld(lobby[5]),
+                    Double.parseDouble(lobby[0]),
+                    Double.parseDouble(lobby[1]),
+                    Double.parseDouble(lobby[2]),
+                    Float.parseFloat(lobby[3]),
+                    Float.parseFloat(lobby[4]));
+        } else
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public void saveLobby(Location lobby)
+    {
+        if (lobby != null)
+        {
+            config.set("ArenaLobby", Math.round(lobby.getX())
+                    + " " + Math.round(lobby.getY())
+                    + " " + Math.round(lobby.getZ())
+                    + " " + Math.round(lobby.getYaw())
+                    + " " + Math.round(lobby.getPitch())
+                    + " " + lobby.getWorld().getName());
+        }
     }
 }

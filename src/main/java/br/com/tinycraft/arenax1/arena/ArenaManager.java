@@ -4,6 +4,7 @@ import br.com.tinycraft.arenax1.ArenaX1;
 
 import java.util.Iterator;
 import java.util.List;
+import org.bukkit.Location;
 
 /**
  *
@@ -14,11 +15,13 @@ public class ArenaManager
 
     private final ArenaX1 plugin;
     private final List<Arena> arenas;
+    private Location arenaLobby;
 
-    public ArenaManager(ArenaX1 plugin, List<Arena> arenas)
+    public ArenaManager(ArenaX1 plugin, List<Arena> arenas, Location lobby)
     {
         this.plugin = plugin;
         this.arenas = arenas;
+        this.arenaLobby = lobby;
     }
 
     public boolean containsArena(String name)
@@ -36,7 +39,17 @@ public class ArenaManager
         }
         return false;
     }
+
+    public Location getArenaLobby()
+    {
+        return arenaLobby;
+    }
     
+    public void setArenaLobby(Location lobby)
+    {
+        this.arenaLobby = lobby;
+    }
+
     public List<Arena> getArenas()
     {
         return this.arenas;

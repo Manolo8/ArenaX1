@@ -198,6 +198,17 @@ public class CommandX1
         }
     }
 
+    @CommandArena(command = "setlobby",
+            superCommand = "arenax1adm",
+            permission = "arenax1.adm",
+            args = 1,
+            usage = "§a/x1adm setlobby")
+    public void setlobby(Player author, String[] args)
+    {
+        author.sendMessage("§aLobby setted!");
+        arenaManager.setArenaLobby(author.getLocation());
+    }
+
     @CommandArena(command = "list",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",

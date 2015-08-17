@@ -37,7 +37,7 @@ public class ArenaX1 extends JavaPlugin
         this.config = new ArenaConfig(this);
         this.data = new FlatFileData(getDataFolder());
         this.language = new Language(this, config);
-        this.arenaManager = new ArenaManager(this, data.loadAllArena());
+        this.arenaManager = new ArenaManager(this, data.loadAllArena(), data.loadLobby());
         this.arenaExecutor = new ArenaExecutor(this, arenaManager, config, language);
         this.inviteManager = new InviteManager(arenaExecutor, config, language);
         this.gui = new GUI(arenaManager, inviteManager, arenaExecutor);
@@ -58,6 +58,7 @@ public class ArenaX1 extends JavaPlugin
     {
         getLogger().info("ArenaX1 By Manolo8 - cron1001@gmail.com");
         data.saveAllArena(arenaManager.getArenas());
+        data.saveLobby(arenaManager.getArenaLobby());
         try
         {
             data.saveToBase();
