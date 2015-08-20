@@ -46,10 +46,10 @@ public class CommandX1
 
         if (inviteManager.createInvite(author, target))
         {
-            author.sendMessage(language.getMessage("InviteMessageAuthor", new String[0]));
+            author.sendMessage(language.getMessage("InviteMessageAuthor"));
         } else
         {
-            author.sendMessage(language.getMessage("ErrorPlayerAlreadyHasInvite", new String[0]));
+            author.sendMessage(language.getMessage("ErrorPlayerAlreadyHasInvite"));
         }
     }
 
@@ -69,11 +69,11 @@ public class CommandX1
         Invite invite = inviteManager.getPendentInvite(author, target);
         if (invite == null)
         {
-            author.sendMessage(language.getMessage("ErrorNoInviteFound", new String[0]));
+            author.sendMessage(language.getMessage("ErrorNoInviteFound"));
         } else
         {
             inviteManager.inviteAccepted(invite);
-            author.sendMessage(language.getMessage("InviteAcceptedTarget", new String[0]));
+            author.sendMessage(language.getMessage("InviteAcceptedTarget"));
         }
     }
 
@@ -92,18 +92,18 @@ public class CommandX1
 
         if (target == null)
         {
-            author.sendMessage(language.getMessage("ErrorNoInviteFound", new String[0]));
+            author.sendMessage(language.getMessage("ErrorNoInviteFound"));
             return;
         }
 
         Invite invite = inviteManager.getPendentInvite(author, target);
         if (invite == null)
         {
-            author.sendMessage(language.getMessage("ErrorNoInviteFound", new String[0]));
+            author.sendMessage(language.getMessage("ErrorNoInviteFound"));
         } else
         {
             inviteManager.inviteRejected(invite);
-            author.sendMessage(language.getMessage("InviteRejectedTarget", new String[0]));
+            author.sendMessage(language.getMessage("InviteRejectedTarget"));
         }
     }
 
@@ -230,11 +230,11 @@ public class CommandX1
     {
         if (target == null)
         {
-            author.sendMessage(language.getMessage("ErrorCommandPlayerNotFound", new String[0]));
+            author.sendMessage(language.getMessage("ErrorCommandPlayerNotFound"));
             return true;
         } else if (author.getName().equalsIgnoreCase(target.getName()))
         {
-            author.sendMessage(language.getMessage("ErrorCommandCantChallengeYourself", new String[0]));
+            author.sendMessage(language.getMessage("ErrorCommandCantChallengeYourself"));
             return true;
         }
         return false;

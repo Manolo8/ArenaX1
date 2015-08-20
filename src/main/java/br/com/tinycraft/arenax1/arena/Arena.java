@@ -113,7 +113,7 @@ public class Arena
             }
         }
 
-        if(remove)
+        if(remove && is)
         {
             this.winner = winnern;
         }

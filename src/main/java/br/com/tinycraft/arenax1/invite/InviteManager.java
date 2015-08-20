@@ -88,10 +88,7 @@ public class InviteManager extends BukkitRunnable
         }
 
         invites.add(new Invite(author, target, defaultTime, acceptedWait));
-        target.sendMessage(language.getMessage("InviteMessageTarget", new String[]
-        {
-            author.getName()
-        }));
+        target.sendMessage(language.getMessage("InviteMessageTarget", author.getName()));
         return true;
     }
 
@@ -99,16 +96,15 @@ public class InviteManager extends BukkitRunnable
     {
         clearPlayerInvites(invite);
         invite.setAccepted(true);
-        invite.getAuthor().sendMessage(language.getMessage("InviteAcceptedAuthor", new String[0]));
+        invite.getAuthor().sendMessage(language.getMessage("InviteAcceptedAuthor"));
     }
 
     public void inviteRejected(Invite invite)
     {
         invites.remove(invite);
-        invite.getAuthor().sendMessage(language.getMessage("InviteRejectedAuthor", new String[]
-        {
-            invite.getTarget().getName()
-        }));
+        invite.getAuthor().sendMessage(language.getMessage("InviteRejectedAuthor",
+                invite.getTarget().getName()
+        ));
     }
 
     public void clearPlayerInvites(Invite invite)
@@ -150,27 +146,25 @@ public class InviteManager extends BukkitRunnable
             if (!invite.getAuthor().isOnline())
             {
                 invite.getTarget().sendMessage(
-                        language.getMessage("InviteCancelledExit", new String[0]));
+                        language.getMessage("InviteCancelledExit"));
                 i.remove();
+                continue;
             } else if (!invite.getTarget().isOnline())
             {
                 invite.getAuthor().sendMessage(
-                        language.getMessage("InviteCancelledExit", new String[0]));
+                        language.getMessage("InviteCancelledExit"));
                 i.remove();
+                continue;
             }
 
             if (invite.isEnded() && !invite.isAccepted())
             {
                 invite.getAuthor().sendMessage(
-                        language.getMessage("InviteExpiredAuthor", new String[]
-                                {
-                                    invite.getTarget().getName()
-                        }));
+                        language.getMessage("InviteExpiredAuthor",
+                                invite.getTarget().getName()));
                 invite.getTarget().sendMessage(
-                        language.getMessage("InviteExpiredTarget", new String[]
-                                {
-                                    invite.getAuthor().getName()
-                        }));
+                        language.getMessage("InviteExpiredTarget",
+                                invite.getAuthor().getName()));
                 i.remove();
             } else if (invite.isAccepted())
             {
@@ -179,30 +173,26 @@ public class InviteManager extends BukkitRunnable
                     if (arenaExecutor.createX1(invite.getAuthor(), invite.getTarget()))
                     {
                         invite.getAuthor().sendMessage(
-                                language.getMessage("InviteAcceptedStarting", new String[0]));
+                                language.getMessage("InviteAcceptedStarting"));
                         invite.getTarget().sendMessage(
-                                language.getMessage("InviteAcceptedStarting", new String[0]));
+                                language.getMessage("InviteAcceptedStarting"));
                     } else
                     {
                         invite.getAuthor().sendMessage(
-                                language.getMessage("InviteAcceptedNoArena", new String[0]));
+                                language.getMessage("InviteAcceptedNoArena"));
                         invite.getTarget().sendMessage(
-                                language.getMessage("InviteAcceptedNoArena", new String[0]));
+                                language.getMessage("InviteAcceptedNoArena"));
                     }
 
                     i.remove();
                 } else
                 {
                     invite.getAuthor().sendMessage(
-                            language.getMessage("InviteAcceptedWaiting", new String[]
-                                    {
-                                        invite.getAcceptedWaitTime() + ""
-                            }));
+                            language.getMessage("InviteAcceptedWaiting",
+                                    invite.getAcceptedWaitTime()));
                     invite.getTarget().sendMessage(
-                            language.getMessage("InviteAcceptedWaiting", new String[]
-                                    {
-                                        invite.getAcceptedWaitTime() + ""
-                            }));
+                            language.getMessage("InviteAcceptedWaiting",
+                                    invite.getAcceptedWaitTime()));
                 }
             }
         }

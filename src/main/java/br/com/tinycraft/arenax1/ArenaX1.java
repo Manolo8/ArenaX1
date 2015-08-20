@@ -9,9 +9,11 @@ import br.com.tinycraft.arenax1.executor.ArenaExecutor;
 import br.com.tinycraft.arenax1.gui.GUI;
 import br.com.tinycraft.arenax1.invite.InviteManager;
 import br.com.tinycraft.arenax1.listener.PlayerListener;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 /**
  *
@@ -28,6 +30,7 @@ public class ArenaX1 extends JavaPlugin
     private ArenaConfig config;
     private Language language;
     private CommandManager commandManager;
+    private Metrics metrics;
 
     @Override
     public void onEnable()
@@ -51,6 +54,15 @@ public class ArenaX1 extends JavaPlugin
 
         getCommand("arenax1").setExecutor(commandManager);
         getCommand("arenax1adm").setExecutor(commandManager);
+
+        try
+        {
+            metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e)
+        {
+            metrics = null;
+        }
     }
 
     @Override

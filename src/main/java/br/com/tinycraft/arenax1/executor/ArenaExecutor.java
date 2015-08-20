@@ -121,10 +121,7 @@ public class ArenaExecutor extends BukkitRunnable
 
             if (arena.getWinner() != null)
             {
-                arena.getWinner().sendMessage(language.getMessage("WinnerMessage", new String[]
-                {
-                    endingTime + ""
-                }));
+                arena.getWinner().sendMessage(language.getMessage("WinnerMessage", endingTime));
             }
         }
     }
@@ -148,17 +145,12 @@ public class ArenaExecutor extends BukkitRunnable
                 int waitTime = defaultRemainingTime - arena.getRemainingTime();
                 if (waitTime >= startWaitTime)
                 {
-                    sendMessage(arena, language.getMessage("DuelStartMessage", new String[]
-                    {
-
-                    }));
+                    sendMessage(arena, language.getMessage("DuelStartMessage"));
                     arena.setWaitinigToStart(false);
                 } else
                 {
-                    sendMessage(arena, language.getMessage("WaitMessage", new String[]
-                    {
-                        (this.startWaitTime - waitTime) + ""
-                    }));
+                    sendMessage(arena, language.getMessage("WaitMessage",
+                            this.startWaitTime - waitTime));
                 }
             }
 
@@ -170,10 +162,8 @@ public class ArenaExecutor extends BukkitRunnable
                     i.remove();
                 } else
                 {
-                    Bukkit.broadcastMessage(language.getMessage("BroadCastMessage", new String[]
-                    {
-                        arena.getWinner().getName(), arena.getLoser().getName()
-                    }));
+                    Bukkit.broadcastMessage(language.getMessage("BroadCastMessage",
+                            arena.getWinner().getName(), arena.getLoser().getName()));
 
                     closeX1(arena);
                     i.remove();

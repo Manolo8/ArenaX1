@@ -28,7 +28,7 @@ public class Language
         {
 
             is = plugin.getResource(config.getLanguage() + ".properties");
-            
+
             if (is.available() == 0)
             {
                 is = plugin.getResource("PT-BR.properties");
@@ -52,19 +52,19 @@ public class Language
         }
     }
 
-    public String getMessage(String key, String[] infos)
+    public String getMessage(String key, Object... infos)
     {
         try
         {
-        if (this.formats.containsKey(key))
-        {
-            return this.formats.get(key).format(infos);
-        } else
-        {
-            MessageFormat mF = new MessageFormat(this.prop.getProperty(key));
-            this.formats.put(key, mF);
-            return mF.format(infos);
-        }
+            if (this.formats.containsKey(key))
+            {
+                return this.formats.get(key).format(infos);
+            } else
+            {
+                MessageFormat mF = new MessageFormat(this.prop.getProperty(key));
+                this.formats.put(key, mF);
+                return mF.format(infos);
+            }
         } catch (Exception e)
         {
             return ("Message not found");
