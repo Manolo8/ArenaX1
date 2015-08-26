@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -99,7 +100,7 @@ public class FlatFileData implements Data
                     arenas.add(loadArena(string));
                 } catch (Exception e)
                 {
-                    Bukkit.getLogger().warning("Error on load arena " + string);
+                    Bukkit.getLogger().log(Level.WARNING, "Error on load arena {0}", string);
                 }
             }
         }

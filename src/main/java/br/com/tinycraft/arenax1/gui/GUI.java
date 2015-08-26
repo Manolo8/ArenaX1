@@ -41,9 +41,13 @@ public class GUI implements Listener
         int m = 0;
         for (Player player : Bukkit.getOnlinePlayers())
         {
+            if (author.getName().equals(player.getName()))
+            {
+                continue;
+            }
             if (arenaExecutor.getPlayerArena(player, false) != null)
             {
-                return;
+                continue;
             }
             ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
@@ -54,7 +58,7 @@ public class GUI implements Listener
 
             if (inviteRelation == 1)
             {
-                skullMeta.setDisplayName("§a" + player.getName() + " invite you. Accept!");
+                skullMeta.setDisplayName("§a" + player.getName() + " invite you. Click to accept!");
                 skull.setDurability((byte) 1);
             } else if (inviteRelation == 2)
             {
@@ -89,18 +93,13 @@ public class GUI implements Listener
             Player author = (Player) e.getWhoClicked();
             Player target = Bukkit.getPlayer(meta.getOwner());
 
-            if (author.getName().equals(target.getName()))
-            {
-                author.playSound(author.getLocation(), Sound.ANVIL_LAND, 20, 1);
-                e.setCancelled(true);
-                return;
-            }
-
             if (target.isOnline())
             {
-                if (inviteManager.getInviteRelation(author, target) != 0)
+                int relation = inviteManager.getInviteRelation(author, target);
+                if (relation == 1)
                 {
-                    author.playSound(author.getLocation(), Sound.ANVIL_LAND, 20, 1);
+                    author.playSound(author.getLocation(), Sound.NOTE_PLING, 20, 1);
+                    inviteManager.getPendentInvite(author, target).setAccepted(true);
                     return;
                 }
                 if (inviteManager.createInvite(author, target))
