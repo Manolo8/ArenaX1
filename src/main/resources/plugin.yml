@@ -1,0 +1,34 @@
+author: Manolo8
+main: br.com.tinycraft.arenax1.ArenaX1
+name: ArenaX1
+version: 0.3
+commands:
+  arenax1:
+    aliases: [x1]
+    permission: arenax1.user
+    permission-message: §cYou don't have permission for this
+    usage: |
+      §aUsage:
+      §a/<command> duel [player] - create an invite of duel to an player
+      §a/<command> accept [player] - accept duel invite of an player
+      §a/<command> reject [player] - reject duel invite of an player
+      $a/<command> box [player] - go to an box to see the fight
+  arenax1adm:
+    aliases: [x1adm]
+    permission: arenax1.admin
+    permission-message: §cYou don't have permission for this
+    usage: |
+      §cUsage:
+      §c/<command> create [name] - create an arena
+      §c/<command> remove [name] - remove an arena
+      §c/<command> pos1 [name] - set the first spawn
+      §c/<command> pos2 [name] - set the second spawn
+      §c/<command> setlobby [name] - set lobby of an arena
+      §c/<command> setbox [name] - set box of an arena
+      §c/<command> list - List all arenas
+permissions:
+  arenax1.user:
+    default: true
+  arenax1.admin:
+    default: op
+  
