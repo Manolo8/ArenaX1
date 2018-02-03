@@ -1,4 +1,4 @@
-package br.com.tinycraft.arenax1.invite;
+package br.com.tinycraft.arenax1.entity;
 
 import org.bukkit.entity.Player;
 

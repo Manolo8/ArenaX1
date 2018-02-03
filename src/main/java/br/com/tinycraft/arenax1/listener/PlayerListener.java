@@ -1,9 +1,10 @@
 package br.com.tinycraft.arenax1.listener;
 
 import br.com.tinycraft.arenax1.ArenaConfig;
-import br.com.tinycraft.arenax1.arena.Arena;
+import br.com.tinycraft.arenax1.controller.UserController;
+import br.com.tinycraft.arenax1.entity.Arena;
 import br.com.tinycraft.arenax1.executor.ArenaExecutor;
-import br.com.tinycraft.arenax1.language.Language;
+import br.com.tinycraft.arenax1.Language;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -13,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -24,11 +26,13 @@ import static org.bukkit.event.EventPriority.HIGHEST;
 public class PlayerListener implements Listener {
 
     private final ArenaExecutor arenaExecutor;
+    private final UserController userController;
     private final Language language;
 
-    public PlayerListener(ArenaExecutor arenaExecutor, ArenaConfig arenaConfig, Language language) {
+    public PlayerListener(ArenaExecutor arenaExecutor, UserController userController, Language language) {
         this.arenaExecutor = arenaExecutor;
         this.language = language;
+        this.userController = userController;
     }
 
     @EventHandler
@@ -37,6 +41,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        userController.playerLeave(e.getPlayer());
         arenaExecutor.playerDeath(e.getPlayer());
     }
 
@@ -47,7 +52,13 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent e) {
+        userController.playerLeave(e.getPlayer());
         arenaExecutor.playerDeath(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerJoinEvent(PlayerJoinEvent e) {
+        userController.playerJoin(e.getPlayer());
     }
 
     @EventHandler(priority = HIGHEST)

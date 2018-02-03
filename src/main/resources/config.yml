@@ -19,7 +19,13 @@ Config:
   #(I'm brazilian)
   LANGUAGE: EN-US
   
-  #GUI ITEM
-  GUI_ITEM: 283
   #Dont change this, please
-  VERSION: 1.1
+  VERSION: 1.2
+Database:
+  #types: [SQLITE],[MYSQL]
+  TYPE: SQLITE
+  MYSQL:
+    HOST: localhost
+    USERNAME: root
+    PASSWORD: root
+    DB: arenax1

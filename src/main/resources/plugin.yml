@@ -13,6 +13,7 @@ commands:
       §a/<command> accept [player] - accept duel invite of an player
       §a/<command> reject [player] - reject duel invite of an player
       $a/<command> box [player] - go to an box to see the fight
+      $a/<command> ranking [page] - See the ranking of the 100 best players
   arenax1adm:
     aliases: [x1adm]
     permission: arenax1.admin

@@ -1,16 +1,14 @@
 package br.com.tinycraft.arenax1;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
+
 /**
- *
  * @author Willian
  */
-public final class ArenaConfig
-{
+public final class ArenaConfig {
 
     private final FileConfiguration config;
     private final int startWaitTime;
@@ -19,20 +17,13 @@ public final class ArenaConfig
     private final int defaultAcceptedWait;
     private final int defaultExpireTime;
     private final String language;
-    private final double _VERSION = 1.1;
+    private final double _VERSION = 1.2;
     private final int guiItem;
 
-    public FileConfiguration getConfig()
-    {
-        return config;
-    }
-
-    public ArenaConfig(ArenaX1 plugin)
-    {
+    public ArenaConfig(ArenaX1 plugin) {
         plugin.saveDefaultConfig();
         this.config = plugin.getConfig();
-        if (this.config.getDouble("Config.VERSION") != _VERSION)
-        {
+        if (this.config.getDouble("Config.VERSION") != _VERSION) {
             File file = new File(plugin.getDataFolder(), "config.yml");
             file.delete();
             plugin.saveDefaultConfig();
@@ -50,60 +41,55 @@ public final class ArenaConfig
         this.guiItem = getInt(283, "Config.GUI_ITEM");
     }
 
-    public int getInt(int defaultValue, String path)
-    {
-        if (this.config.contains(path))
-        {
+    public FileConfiguration getConfig() {
+        return config;
+    }
+
+    public int getInt(int defaultValue, String path) {
+        if (this.config.contains(path)) {
             return this.config.getInt(path);
-        } else
-        {
+        } else {
             return defaultValue;
         }
     }
 
-    public String getString(String defaultValue, String path)
-    {
-        if (this.config.contains(path))
-        {
+    public String getString(String path) {
+        return this.config.getString(path);
+    }
+
+    public String getString(String defaultValue, String path) {
+        if (this.config.contains(path)) {
             return this.config.getString(path);
-        } else
-        {
+        } else {
             return defaultValue;
         }
     }
 
-    public int getStartWaitTime()
-    {
+    public int getStartWaitTime() {
         return startWaitTime;
     }
 
-    public int getEndindTime()
-    {
+    public int getEndindTime() {
         return endindTime;
     }
 
-    public int getDefaultRemainingTime()
-    {
+    public int getDefaultRemainingTime() {
         return defaultRemainingTime;
     }
 
-    public int getDefaultAcceptedWait()
-    {
+    public int getDefaultAcceptedWait() {
         return defaultAcceptedWait;
     }
 
-    public int getDefaultExpireTime()
-    {
+    public int getDefaultExpireTime() {
         return defaultExpireTime;
     }
 
-    public String getLanguage()
-    {
+    public String getLanguage() {
         return language;
     }
-    
-    public int getGuiItem()
-    {
+
+    public int getGuiItem() {
         return this.guiItem;
     }
 }

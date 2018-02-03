@@ -1,8 +1,9 @@
-package br.com.tinycraft.arenax1.invite;
+package br.com.tinycraft.arenax1.controller;
 
 import br.com.tinycraft.arenax1.ArenaConfig;
+import br.com.tinycraft.arenax1.entity.Invite;
 import br.com.tinycraft.arenax1.executor.ArenaExecutor;
-import br.com.tinycraft.arenax1.language.Language;
+import br.com.tinycraft.arenax1.Language;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * @author AB
  */
-public class InviteManager implements Runnable {
+public class InviteController implements Runnable {
 
     private final ArenaExecutor arenaExecutor;
     private final Language language;
@@ -20,7 +21,7 @@ public class InviteManager implements Runnable {
     private final int acceptedWait;
     private final List<Invite> invites;
 
-    public InviteManager(ArenaExecutor arenaExecutor, ArenaConfig config, Language language) {
+    public InviteController(ArenaExecutor arenaExecutor, ArenaConfig config, Language language) {
         this.arenaExecutor = arenaExecutor;
         this.defaultTime = config.getDefaultExpireTime();
         this.acceptedWait = config.getDefaultAcceptedWait();

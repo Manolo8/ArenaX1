@@ -1,10 +1,11 @@
 package br.com.tinycraft.arenax1.executor;
 
 import br.com.tinycraft.arenax1.ArenaConfig;
-import br.com.tinycraft.arenax1.arena.Arena;
-import br.com.tinycraft.arenax1.arena.ArenaManager;
-import br.com.tinycraft.arenax1.invite.Invite;
-import br.com.tinycraft.arenax1.language.Language;
+import br.com.tinycraft.arenax1.Language;
+import br.com.tinycraft.arenax1.controller.ArenaController;
+import br.com.tinycraft.arenax1.controller.UserController;
+import br.com.tinycraft.arenax1.entity.Arena;
+import br.com.tinycraft.arenax1.entity.Invite;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,15 +18,17 @@ import java.util.List;
  */
 public class ArenaExecutor implements Runnable {
 
-    private final ArenaManager arenaManager;
+    private final ArenaController arenaController;
+    private final UserController userController;
     private final Language language;
     private final List<Arena> runningArenas;
     private final int defaultRemainingTime;
     private final int startWaitTime;
     private final int endingTime;
 
-    public ArenaExecutor(ArenaManager arenaManager, ArenaConfig config, Language language) {
-        this.arenaManager = arenaManager;
+    public ArenaExecutor(ArenaController arenaController, UserController userController, ArenaConfig config, Language language) {
+        this.arenaController = arenaController;
+        this.userController = userController;
         this.language = language;
         this.defaultRemainingTime = config.getDefaultRemainingTime();
         this.startWaitTime = config.getStartWaitTime();
@@ -35,7 +38,7 @@ public class ArenaExecutor implements Runnable {
     }
 
     public boolean createX1(Invite invite) {
-        Arena duel = arenaManager.getAvailableArena();
+        Arena duel = arenaController.getAvailableArena();
 
         if (duel == null) {
             return false;
@@ -103,6 +106,8 @@ public class ArenaExecutor implements Runnable {
                             arena.getWinner().getName(), arena.getLoser().getName()));
                 else Bukkit.broadcastMessage(language.getMessage("BroadCastMessage",
                         arena.getWinner().getName(), arena.getLoser().getName()));
+
+                userController.updateByArenaStatus(arena);
 
                 arena.close();
             }

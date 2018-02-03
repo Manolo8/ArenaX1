@@ -1,14 +1,21 @@
 package br.com.tinycraft.arenax1.commands;
 
-import br.com.tinycraft.arenax1.arena.Arena;
-import br.com.tinycraft.arenax1.arena.ArenaManager;
+import br.com.tinycraft.arenax1.Language;
 import br.com.tinycraft.arenax1.commands.annotation.CommandArena;
+import br.com.tinycraft.arenax1.controller.ArenaController;
+import br.com.tinycraft.arenax1.controller.InviteController;
+import br.com.tinycraft.arenax1.controller.UserController;
+import br.com.tinycraft.arenax1.entity.Arena;
+import br.com.tinycraft.arenax1.entity.Invite;
+import br.com.tinycraft.arenax1.entity.User;
+import br.com.tinycraft.arenax1.exception.DataBaseException;
 import br.com.tinycraft.arenax1.executor.ArenaExecutor;
-import br.com.tinycraft.arenax1.invite.Invite;
-import br.com.tinycraft.arenax1.invite.InviteManager;
-import br.com.tinycraft.arenax1.language.Language;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author Willian
@@ -16,15 +23,21 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("unused")
 public class CommandX1 {
 
-    private final InviteManager inviteManager;
+    private final InviteController inviteController;
     private final Language language;
-    private final ArenaManager arenaManager;
+    private final ArenaController arenaController;
+    private final UserController userController;
     private final ArenaExecutor arenaExecutor;
 
-    public CommandX1(InviteManager inviteManager, Language language, ArenaManager arenaManager, ArenaExecutor arenaExecutor) {
-        this.inviteManager = inviteManager;
+    public CommandX1(InviteController inviteController,
+                     Language language,
+                     ArenaController arenaController,
+                     UserController userController,
+                     ArenaExecutor arenaExecutor) {
+        this.inviteController = inviteController;
         this.language = language;
-        this.arenaManager = arenaManager;
+        this.arenaController = arenaController;
+        this.userController = userController;
         this.arenaExecutor = arenaExecutor;
     }
 
@@ -39,10 +52,62 @@ public class CommandX1 {
             return;
         }
 
-        if (inviteManager.createInvite(author, target)) {
+        if (inviteController.createInvite(author, target)) {
             author.sendMessage(language.getMessage("InviteMessageAuthor"));
             target.sendMessage(language.getMessage("InviteMessageTarget", author.getName()));
         } else author.sendMessage(language.getMessage("ErrorPlayerAlreadyHasInvite"));
+    }
+
+    @CommandArena(command = "accept",
+            superCommand = "arenax1",
+            args = 2,
+            usage = "§a/x1 accept [nick] - Accept player duel")
+    public void accept(Player target, String[] args) {
+        Player author = Bukkit.getPlayer(args[1]);
+
+        if (checkPlayers(target, author)) {
+            return;
+        }
+
+        if (author == null) {
+            target.sendMessage(language.getMessage("ErrorNoInviteFound"));
+            return;
+        }
+
+        Invite invite = inviteController.getPendentInvite(author, target);
+
+        if (invite == null) target.sendMessage(language.getMessage("ErrorNoInviteFound"));
+        else {
+            inviteController.inviteAccepted(invite);
+            target.sendMessage(language.getMessage("InviteAcceptedTarget"));
+            author.sendMessage(language.getMessage("InviteAcceptedAuthor"));
+        }
+    }
+
+    @CommandArena(command = "reject",
+            superCommand = "arenax1",
+            args = 2,
+            usage = "§a/x1 reject [nick] - Reject player duel")
+    public void reject(Player target, String[] args) {
+        Player author = Bukkit.getPlayer(args[1]);
+
+        if (checkPlayers(target, author)) return;
+
+        if (author == null) {
+            target.sendMessage(language.getMessage("ErrorNoInviteFound"));
+            return;
+        }
+
+        Invite invite = inviteController.getPendentInvite(author, target);
+
+        if (invite == null) author.sendMessage(language.getMessage("ErrorNoInviteFound"));
+        else {
+            inviteController.inviteRejected(invite);
+            author.sendMessage(language.getMessage("InviteRejectedTarget"));
+            invite.getAuthor().sendMessage(language.getMessage("InviteRejectedAuthor",
+                    invite.getTarget().getName()
+            ));
+        }
     }
 
     @CommandArena(command = "box",
@@ -67,55 +132,68 @@ public class CommandX1 {
         author.teleport(arena.getBox());
     }
 
-    @CommandArena(command = "accept",
+    @CommandArena(command = "test",
             superCommand = "arenax1",
-            args = 2,
-            usage = "§a/x1 accept [nick] - Accept player duel")
-    public void accept(Player target, String[] args) {
-        Player author = Bukkit.getPlayer(args[1]);
+            args = 1,
+            usage = "")
+    public void test(Player author, String[] args) {
+        Random random = new Random();
 
-        if (checkPlayers(target, author)) {
-            return;
-        }
-
-        if (author == null) {
-            target.sendMessage(language.getMessage("ErrorNoInviteFound"));
-            return;
-        }
-
-        Invite invite = inviteManager.getPendentInvite(author, target);
-
-        if (invite == null) target.sendMessage(language.getMessage("ErrorNoInviteFound"));
-        else {
-            inviteManager.inviteAccepted(invite);
-            target.sendMessage(language.getMessage("InviteAcceptedTarget"));
-            author.sendMessage(language.getMessage("InviteAcceptedAuthor"));
+        for (int i = 0; i < 400; i++) {
+            User user = new User();
+            user.setUuid(UUID.randomUUID());
+            user.setLastName("ASD " + random.nextInt(100));
+            user.setLoses(random.nextInt(5000));
+            user.setWins(random.nextInt(5000));
+            try {
+                userController.getUserService().save(user);
+            } catch (DataBaseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    @CommandArena(command = "reject",
+    @CommandArena(command = "ranking",
             superCommand = "arenax1",
-            args = 2,
-            usage = "§a/x1 reject [nick] - Reject player duel")
-    public void reject(Player target, String[] args) {
-        Player author = Bukkit.getPlayer(args[1]);
+            args = {1, 2},
+            usage = "§a/x1 ranking ?[page] - Ver o ranking dos 100 melhores jogadores")
+    public void ranking(Player author, String[] args) {
+        int page = 0;
+        int viewSize = 10;
 
-        if (checkPlayers(target, author)) return;
+        if (args.length == 2) {
+            try {
+                page = Integer.parseInt(args[1]);
+            } catch (NumberFormatException ignored) {
+                author.sendMessage(language.getMessage("RankingPageInvalid"));
+                return;
+            }
+        }
 
-        if (author == null) {
-            target.sendMessage(language.getMessage("ErrorNoInviteFound"));
+        List<User> ranking = userController.getRanking();
+
+        if (ranking.isEmpty()) {
+            author.sendMessage(language.getMessage("NoRanking"));
             return;
         }
 
-        Invite invite = inviteManager.getPendentInvite(author, target);
+        if ((page - 1) * viewSize > ranking.size()) {
+            page = ranking.size() / 10;
+        }
 
-        if (invite == null) author.sendMessage(language.getMessage("ErrorNoInviteFound"));
-        else {
-            inviteManager.inviteRejected(invite);
-            author.sendMessage(language.getMessage("InviteRejectedTarget"));
-            invite.getAuthor().sendMessage(language.getMessage("InviteRejectedAuthor",
-                    invite.getTarget().getName()
-            ));
+        int current = page * viewSize;
+
+        author.sendMessage(language.getMessage("RankingDisplayHeader", page + 1, (ranking.size() / viewSize) + 1));
+
+        for (int i = 0; i < viewSize; i++) {
+            if (ranking.size() - 1 < current + i) break;
+            User user = ranking.get(current + i);
+            author.sendMessage(language.getMessage("RankingDisplayBody",
+                    current + i,
+                    user.getLastName(),
+                    user.getRate(),
+                    user.getWins(),
+                    user.getLoses()));
         }
     }
 
@@ -125,7 +203,7 @@ public class CommandX1 {
             args = 2,
             usage = "§a/x1adm create [ArenaName]")
     public void create(Player author, String[] args) {
-        if (arenaManager.createArena(args[1], author.getWorld().getName())) author.sendMessage("§aArena created with successful!");
+        if (arenaController.createArena(args[1], author.getWorld().getName())) author.sendMessage("§aArena created with successful!");
         else author.sendMessage("§cErro: Arena already exists");
     }
 
@@ -133,9 +211,9 @@ public class CommandX1 {
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm remove [ArenaName]")
+            usage = "§a/x1adm remove [Name]")
     public void remove(Player author, String[] args) {
-        if (arenaManager.removeArena(args[1])) author.sendMessage("§aArena removed with sucessful!");
+        if (arenaController.removeArena(args[1])) author.sendMessage("§aArena removed with sucessful!");
         else author.sendMessage("§cError! Arena not found.");
 
     }
@@ -144,9 +222,9 @@ public class CommandX1 {
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm pos1 [ArenaName]")
+            usage = "§a/x1adm pos1 [Name]")
     public void pos1(Player author, String[] args) {
-        Arena arena = arenaManager.getArena(args[1]);
+        Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null) author.sendMessage("§cError! Arena not found.");
         else {
@@ -163,9 +241,9 @@ public class CommandX1 {
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm pos2 [ArenaName]")
+            usage = "§a/x1adm pos2 [Name]")
     public void pos2(Player author, String[] args) {
-        Arena arena = arenaManager.getArena(args[1]);
+        Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null)
             author.sendMessage("§cError! Arena not found.");
@@ -183,9 +261,9 @@ public class CommandX1 {
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm setlobby [ArenaName]")
+            usage = "§a/x1adm setlobby [Name]")
     public void setlobby(Player author, String[] args) {
-        Arena arena = arenaManager.getArena(args[1]);
+        Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null)
             author.sendMessage("§cError! Arena not found.");
@@ -199,9 +277,9 @@ public class CommandX1 {
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm setbox [ArenaName]")
+            usage = "§a/x1adm setbox [Name]")
     public void setBox(Player author, String[] args) {
-        Arena arena = arenaManager.getArena(args[1]);
+        Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null)
             author.sendMessage("§cError! Arena not found.");
@@ -219,9 +297,8 @@ public class CommandX1 {
     public void list(Player author, String[] args) {
         author.sendMessage("§a -> Arenas:");
 
-        for (Arena arena : arenaManager.getArenas()) {
+        for (Arena arena : arenaController.getArenas())
             author.sendMessage("§a " + arena.getName() + (arena.isCompleted() ? " enabled." : " §cno spawn position"));
-        }
     }
 
     private boolean checkPlayers(Player author, Player target) {

@@ -1,4 +1,4 @@
-package br.com.tinycraft.arenax1.language;
+package br.com.tinycraft.arenax1;
 
 import br.com.tinycraft.arenax1.ArenaConfig;
 import br.com.tinycraft.arenax1.ArenaX1;
@@ -20,7 +20,7 @@ public class Language
 
     public Language(ArenaX1 plugin, ArenaConfig config)
     {
-        formats = new HashMap();
+        formats = new HashMap<>();
         prop = new Properties();
         InputStream is = null;
 
@@ -67,7 +67,7 @@ public class Language
             }
         } catch (Exception e)
         {
-            return ("Message not found");
+            return ("Message '" + key + "' not found.");
         }
     }
 }

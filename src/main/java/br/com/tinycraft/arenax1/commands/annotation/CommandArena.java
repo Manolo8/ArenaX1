@@ -20,7 +20,7 @@ public @interface CommandArena
 
     public boolean defaultCommand() default false;
 
-    public int args() default 1;
+    public int[] args() default 1;
 
     public String command() default "default";
     

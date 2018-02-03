@@ -1,7 +1,6 @@
-package br.com.tinycraft.arenax1.arena;
+package br.com.tinycraft.arenax1.entity;
 
-import br.com.tinycraft.arenax1.ArenaX1;
-import br.com.tinycraft.arenax1.invite.Invite;
+import br.com.tinycraft.arenax1.entity.itf.ArenaStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,10 +11,10 @@ import java.util.List;
 /**
  * @author Willian
  */
-public class Arena {
+public class Arena implements ArenaStatus {
 
-    private final String name;
-    private final String world;
+    private String name;
+    private String world;
     private Location pos1;
     private Location pos2;
     private Location lobby;
@@ -27,6 +26,9 @@ public class Arena {
     private boolean isOccurring;
     private boolean isWaitingToStart;
     private boolean tie;
+
+    public Arena() {
+    }
 
     public Arena(String name, String world, Location pos1, Location pos2, Location lobby, Location box) {
         this.name = name;
