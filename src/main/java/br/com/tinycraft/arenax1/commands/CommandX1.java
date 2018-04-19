@@ -8,14 +8,11 @@ import br.com.tinycraft.arenax1.controller.UserController;
 import br.com.tinycraft.arenax1.entity.Arena;
 import br.com.tinycraft.arenax1.entity.Invite;
 import br.com.tinycraft.arenax1.entity.User;
-import br.com.tinycraft.arenax1.exception.DataBaseException;
 import br.com.tinycraft.arenax1.executor.ArenaExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 /**
  * @author Willian
@@ -41,10 +38,10 @@ public class CommandX1 {
         this.arenaExecutor = arenaExecutor;
     }
 
-    @CommandArena(command = "duel",
+    @CommandArena(command = "CommandChallenge",
             superCommand = "arenax1",
             args = 2,
-            usage = "§a/x1 duel [nick] - duel with an player")
+            usage = "CommandChallengeUsage")
     public void duel(Player author, String[] args) {
         Player target = Bukkit.getPlayer(args[1]);
 
@@ -58,10 +55,10 @@ public class CommandX1 {
         } else author.sendMessage(language.getMessage("ErrorPlayerAlreadyHasInvite"));
     }
 
-    @CommandArena(command = "accept",
+    @CommandArena(command = "CommandAccept",
             superCommand = "arenax1",
             args = 2,
-            usage = "§a/x1 accept [nick] - Accept player duel")
+            usage = "CommandAcceptUsage")
     public void accept(Player target, String[] args) {
         Player author = Bukkit.getPlayer(args[1]);
 
@@ -84,10 +81,10 @@ public class CommandX1 {
         }
     }
 
-    @CommandArena(command = "reject",
+    @CommandArena(command = "CommandReject",
             superCommand = "arenax1",
             args = 2,
-            usage = "§a/x1 reject [nick] - Reject player duel")
+            usage = "CommandRejectUsage")
     public void reject(Player target, String[] args) {
         Player author = Bukkit.getPlayer(args[1]);
 
@@ -110,10 +107,10 @@ public class CommandX1 {
         }
     }
 
-    @CommandArena(command = "box",
+    @CommandArena(command = "CommandBox",
             superCommand = "arenax1",
             args = 2,
-            usage = "§a/x1 box [nick] - go to an box to see the fight")
+            usage = "CommandBoxUsage")
     public void box(Player author, String[] args) {
         Player target = Bukkit.getPlayer(args[1]);
 
@@ -132,41 +129,52 @@ public class CommandX1 {
         author.teleport(arena.getBox());
     }
 
-    @CommandArena(command = "test",
-            superCommand = "arenax1",
-            args = 1,
-            usage = "")
-    public void test(Player author, String[] args) {
-        Random random = new Random();
-
-        for (int i = 0; i < 400; i++) {
-            User user = new User();
-            user.setUuid(UUID.randomUUID());
-            user.setLastName("ASD " + random.nextInt(100));
-            user.setLoses(random.nextInt(5000));
-            user.setWins(random.nextInt(5000));
-            try {
-                userController.getUserService().save(user);
-            } catch (DataBaseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @CommandArena(command = "ranking",
+    @CommandArena(command = "CommandStatus",
             superCommand = "arenax1",
             args = {1, 2},
-            usage = "§a/x1 ranking ?[page] - Ver o ranking dos 100 melhores jogadores")
-    public void ranking(Player author, String[] args) {
+            usage = "CommandStatusUsage")
+    public void status(Player author, String[] args) {
+        Player target = author;
+        if (args.length == 2) target = Bukkit.getPlayer(args[1]);
+
+        if (target == null) {
+            author.sendMessage(language.getMessage("ErrorCommandPlayerNotFound"));
+            return;
+        }
+
+        User user = userController.findOne(target);
+
+        int rankPosition = userController.findRankPosition(user);
+
+        String rank;
+        if (rankPosition == -1) {
+            rank = language.getMessage("PlayerStatusNoRank");
+        } else {
+            rank = language.getMessage("PlayerStatusRank", rankPosition + 1);
+        }
+
+        author.sendMessage(language.getMessage("PlayerStatus",
+                rank,
+                user.getRate(),
+                user.getWins(),
+                user.getLoses()));
+    }
+
+    @CommandArena(command = "CommandRanking",
+            superCommand = "arenax1",
+            args = {1, 2},
+            usage = "CommandRankingUsage")
+    public boolean ranking(Player author, String[] args) {
         int page = 0;
         int viewSize = 10;
 
         if (args.length == 2) {
             try {
                 page = Integer.parseInt(args[1]);
+                page--;
+                if (page < 0 || page > 10) throw new NumberFormatException();
             } catch (NumberFormatException ignored) {
-                author.sendMessage(language.getMessage("RankingPageInvalid"));
-                return;
+                return false;
             }
         }
 
@@ -174,131 +182,140 @@ public class CommandX1 {
 
         if (ranking.isEmpty()) {
             author.sendMessage(language.getMessage("NoRanking"));
-            return;
+            return true;
         }
 
         if ((page - 1) * viewSize > ranking.size()) {
-            page = ranking.size() / 10;
+            page = ranking.size() / viewSize;
         }
 
         int current = page * viewSize;
+        int totalPages = ranking.size() / viewSize;
 
-        author.sendMessage(language.getMessage("RankingDisplayHeader", page + 1, (ranking.size() / viewSize) + 1));
+        author.sendMessage(language.getMessage("RankingDisplayHeader",
+                (page == 0 ? 1 : page + 1),
+                (totalPages == 0 ? 1 : totalPages)));
 
         for (int i = 0; i < viewSize; i++) {
             if (ranking.size() - 1 < current + i) break;
             User user = ranking.get(current + i);
             author.sendMessage(language.getMessage("RankingDisplayBody",
-                    current + i,
+                    current + i + 1,
                     user.getLastName(),
                     user.getRate(),
                     user.getWins(),
                     user.getLoses()));
         }
+
+        return true;
     }
 
-    @CommandArena(command = "create",
+    @CommandArena(command = "CommandCreate",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm create [ArenaName]")
+            usage = "CommandCreateUsage")
     public void create(Player author, String[] args) {
-        if (arenaController.createArena(args[1], author.getWorld().getName())) author.sendMessage("§aArena created with successful!");
-        else author.sendMessage("§cErro: Arena already exists");
+        if (arenaController.createArena(args[1],
+                author.getWorld().getName())) author.sendMessage(language.getMessage("ArenaCreated", args[1]));
+        else author.sendMessage(language.getMessage("ArenaAlreadyExists"));
     }
 
-    @CommandArena(command = "remove",
+    @CommandArena(command = "CommandRemove",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm remove [Name]")
+            usage = "CommandRemoveUsage")
     public void remove(Player author, String[] args) {
-        if (arenaController.removeArena(args[1])) author.sendMessage("§aArena removed with sucessful!");
-        else author.sendMessage("§cError! Arena not found.");
+        if (arenaController.removeArena(args[1]))
+            author.sendMessage(language.getMessage("ArenaRemoved", args[1]));
+        else author.sendMessage(language.getMessage("ArenaNotFound"));
 
     }
 
-    @CommandArena(command = "pos1",
+    @CommandArena(command = "CommandPos1",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm pos1 [Name]")
+            usage = "CommandPos1Usage")
     public void pos1(Player author, String[] args) {
         Arena arena = arenaController.getArena(args[1]);
 
-        if (arena == null) author.sendMessage("§cError! Arena not found.");
+        if (arena == null) author.sendMessage(language.getMessage("ArenaNotFound"));
         else {
-            author.sendMessage("§aPosition 1 has been setted!");
+            author.sendMessage(language.getMessage("PropertySet"));
             if (arena.setPos1(author.getLocation())) {
-                author.sendMessage("§a" + arena.getName() + " is ok now!");
+                author.sendMessage(language.getMessage("ArenaCompleted", arena.getName()));
             } else {
-                author.sendMessage("§cNow set the second position!");
+                author.sendMessage(language.getMessage("SetSecondPosition"));
             }
         }
     }
 
-    @CommandArena(command = "pos2",
+    @CommandArena(command = "CommandPos2",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm pos2 [Name]")
+            usage = "CommandPos2Usage")
     public void pos2(Player author, String[] args) {
         Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null)
-            author.sendMessage("§cError! Arena not found.");
+            author.sendMessage(language.getMessage("ArenaNotFound"));
         else {
-            author.sendMessage("§aPosition 2 has been setted!");
+            author.sendMessage(language.getMessage("PropertySet"));
             if (arena.setPos2(author.getLocation())) {
-                author.sendMessage("§a" + arena.getName() + " is ok now!");
+                author.sendMessage(language.getMessage("ArenaCompleted", arena.getName()));
             } else {
-                author.sendMessage("§cNow set the first position");
+                author.sendMessage(language.getMessage("SetFirstPosition"));
             }
         }
     }
 
-    @CommandArena(command = "setlobby",
+    @CommandArena(command = "CommandSetLobby",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm setlobby [Name]")
+            usage = "CommandSetLobbyUsage")
     public void setlobby(Player author, String[] args) {
         Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null)
-            author.sendMessage("§cError! Arena not found.");
+            author.sendMessage("§cErro! Arena nao encontrada.");
         else {
             arena.setLobby(author.getLocation());
-            author.sendMessage("§aLobby setted!");
+            author.sendMessage(language.getMessage("PropertySet"));
         }
     }
 
-    @CommandArena(command = "setbox",
+    @CommandArena(command = "CommandSetBox",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 2,
-            usage = "§a/x1adm setbox [Name]")
+            usage = "CommandSetBoxUsage")
     public void setBox(Player author, String[] args) {
         Arena arena = arenaController.getArena(args[1]);
 
         if (arena == null)
-            author.sendMessage("§cError! Arena not found.");
+            author.sendMessage(language.getMessage("ArenaNotFound"));
         else {
             arena.setBox(author.getLocation());
-            author.sendMessage("§aBox setted!");
+            author.sendMessage(language.getMessage("PropertySet"));
         }
     }
 
-    @CommandArena(command = "list",
+    @CommandArena(command = "CommandList",
             superCommand = "arenax1adm",
             permission = "arenax1.adm",
             args = 1,
-            usage = "§a/x1adm list")
+            usage = "CommandListUsage")
     public void list(Player author, String[] args) {
         author.sendMessage("§a -> Arenas:");
 
         for (Arena arena : arenaController.getArenas())
-            author.sendMessage("§a " + arena.getName() + (arena.isCompleted() ? " enabled." : " §cno spawn position"));
+            author.sendMessage(language.getMessage("ArenaListBody",
+                    arena.getName(),
+                    language.getMessage((arena.isCompleted() ? "Completed" : "NotCompleted"))));
     }
 
     private boolean checkPlayers(Player author, Player target) {

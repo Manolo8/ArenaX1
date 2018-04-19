@@ -20,11 +20,11 @@ public class UserService {
         return userDao.findAll();
     }
 
-    public User findOrCreate(UUID uuid) throws DataBaseException {
-        User user = userDao.findOne(uuid);
+    public User findOrCreate(Object object) throws DataBaseException {
+        User user = userDao.findOne(object);
         if (user == null) {
             user = new User();
-            user.setUuid(uuid);
+            user.setUuid(object);
             save(user);
         }
         return user;
@@ -34,8 +34,8 @@ public class UserService {
         userDao.save(user);
     }
 
-    public void delete(UUID uuid) throws DataBaseException {
-        userDao.delete(uuid);
+    public void delete(Object object) throws DataBaseException {
+        userDao.delete(object);
     }
 
     public List<User> ranking() {

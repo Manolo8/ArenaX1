@@ -10,13 +10,13 @@ public interface UserDao {
 
     List<User> findAll() throws DataBaseException;
 
-    User findOne(UUID uuid) throws DataBaseException;
+    User findOne(Object object) throws DataBaseException;
 
     void create(User user) throws DataBaseException;
 
     void save(User user) throws DataBaseException;
 
-    void delete(UUID uuid) throws DataBaseException;
+    void delete(Object object) throws DataBaseException;
 
     List<User> ranking();
 }

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class User {
 
-    private UUID uuid;
+    private Object uuid;
     private String lastName;
     private int wins;
     private int loses;
@@ -18,11 +18,11 @@ public class User {
         save = false;
     }
 
-    public UUID getUuid() {
+    public Object getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(Object uuid) {
         this.uuid = uuid;
     }
 
@@ -55,8 +55,7 @@ public class User {
     }
 
     public double getRate() {
-        if (wins < 1 || loses < 1) return 1;
-        return (double) wins / (double) loses;
+        return (double) (wins < 1 ? 1 : wins) / (double) (loses < 1 ? 1 : loses);
     }
 
     public boolean isNew() {
@@ -73,5 +72,11 @@ public class User {
 
     public void setSave(boolean save) {
         this.save = save;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) return false;
+        return ((User) obj).getUuid().equals(uuid);
     }
 }

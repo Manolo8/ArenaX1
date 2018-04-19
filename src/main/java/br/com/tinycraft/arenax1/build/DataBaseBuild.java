@@ -4,7 +4,6 @@ import br.com.tinycraft.arenax1.ArenaConfig;
 import br.com.tinycraft.arenax1.exception.DataBaseException;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
 import java.sql.Connection;
 
 public class DataBaseBuild {
@@ -15,7 +14,7 @@ public class DataBaseBuild {
         return dataBase.getConnection();
     }
 
-    public void buildByConfig(Plugin plugin, ArenaConfig config) {
+    public void buildByConfig(Plugin plugin, ArenaConfig config) throws DataBaseException {
         String type = config.getString("SQLITE", "Database.TYPE");
 
         switch (type) {
@@ -23,6 +22,7 @@ public class DataBaseBuild {
                 Sqlite sqlite = new Sqlite();
                 sqlite.setDataFolder(plugin.getDataFolder());
                 this.dataBase = sqlite;
+                sqlite.getConnection();
                 break;
             case "MYSQL":
                 Mysql mysql = new Mysql();
@@ -30,8 +30,11 @@ public class DataBaseBuild {
                 mysql.setUsername(config.getString("Database.MYSQL.USERNAME"));
                 mysql.setPassword(config.getString("Database.MYSQL.PASSWORD"));
                 mysql.setDataBase(config.getString("Database.MYSQL.DB"));
+                mysql.getConnection();
                 this.dataBase = mysql;
                 break;
+            default:
+                throw new DataBaseException("Type " + type + " not found");
         }
     }
 }

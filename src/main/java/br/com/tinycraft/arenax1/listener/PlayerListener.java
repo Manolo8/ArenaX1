@@ -1,10 +1,9 @@
 package br.com.tinycraft.arenax1.listener;
 
-import br.com.tinycraft.arenax1.ArenaConfig;
+import br.com.tinycraft.arenax1.Language;
 import br.com.tinycraft.arenax1.controller.UserController;
 import br.com.tinycraft.arenax1.entity.Arena;
 import br.com.tinycraft.arenax1.executor.ArenaExecutor;
-import br.com.tinycraft.arenax1.Language;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

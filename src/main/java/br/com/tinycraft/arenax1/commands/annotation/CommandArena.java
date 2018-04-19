@@ -16,7 +16,7 @@ public @interface CommandArena
 
     public String permission() default "arenax1.user";
 
-    public String permissionMessage() default "§cYou dont have permission for this";
+    public String permissionMessage() default "NoPermission";
 
     public boolean defaultCommand() default false;
 

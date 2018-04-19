@@ -50,11 +50,12 @@ public class CommandController implements CommandExecutor {
 
         Player player = (Player) cs;
 
-        if (args.length == 0) {
-            return false;
-        }
-
         String command = cmnd.getName().toLowerCase();
+
+        if (args.length == 0) {
+            sendHelp(player, command);
+            return true;
+        }
 
         for (Method method : methods) {
             CommandArena annotation = method.getAnnotation(CommandArena.class);
@@ -62,27 +63,47 @@ public class CommandController implements CommandExecutor {
             if (!annotation.superCommand().equals(command)) {
                 continue;
             }
-            if (!annotation.command().equalsIgnoreCase(args[0])) {
-                continue;
-            }
+
+            if (!getCommand(annotation).equals(args[0].toLowerCase())) continue;
+
             if (!player.hasPermission(annotation.permission())) {
                 player.sendMessage(annotation.permissionMessage());
                 return true;
             }
+
             if (!ArrayUtils.contains(annotation.args(), args.length)) {
-                player.sendMessage("§cUsage: " + annotation.usage());
+                player.sendMessage(getUsage(annotation));
                 return true;
             }
+
             try {
                 Object object = method.invoke(commandX1, player, args);
                 if (object instanceof Boolean) return (Boolean) object;
                 return true;
             } catch (Exception e) {
-                player.sendMessage("§cHouve um erro interno executando o comando.");
+                player.sendMessage(language.getMessage("ErrorInternal"));
                 e.printStackTrace();
-                return true;
+            }
+            return true;
+        }
+        sendHelp(player, command);
+        return true;
+    }
+
+    public void sendHelp(CommandSender sender, String command) {
+        for (Method method : methods) {
+            CommandArena annotation = method.getAnnotation(CommandArena.class);
+            if (annotation.superCommand().equals(command)) {
+                sender.sendMessage(getUsage(annotation));
             }
         }
-        return false;
+    }
+
+    private String getCommand(CommandArena commandArena) {
+        return language.getMessage(commandArena.command());
+    }
+
+    private String getUsage(CommandArena commandArena) {
+        return language.getMessage("Usage") + "§c/" + language.getMessage(commandArena.usage(), getCommand(commandArena));
     }
 }

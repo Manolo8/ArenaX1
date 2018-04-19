@@ -67,12 +67,12 @@ public class UserDaoSQL implements UserDao {
     }
 
     @Override
-    public User findOne(UUID uuid) throws DataBaseException {
+    public User findOne(Object object) throws DataBaseException {
         try {
             Connection connection = build.getConnection();
             Statement statement = connection.createStatement();
 
-            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE uuid='" + uuid + "'");
+            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE uuid='" + object + "'");
 
             if (!result.next()) return null;
 
@@ -131,12 +131,12 @@ public class UserDaoSQL implements UserDao {
     }
 
     @Override
-    public void delete(UUID uuid) throws DataBaseException {
+    public void delete(Object object) throws DataBaseException {
         try {
             Connection connection = build.getConnection();
             Statement statement = connection.createStatement();
 
-            statement.executeUpdate("DELETE FROM users WHERE uuid='" + uuid + "'");
+            statement.executeUpdate("DELETE FROM users WHERE uuid='" + object + "'");
 
             statement.close();
         } catch (SQLException e) {
@@ -152,7 +152,7 @@ public class UserDaoSQL implements UserDao {
             Statement statement = connection.createStatement();
             List<User> users = new ArrayList<>();
 
-            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE wins >5 ORDER BY rate DESC LIMIT 0,100");
+            ResultSet result = statement.executeQuery("SELECT * FROM users WHERE wins > 0 ORDER BY rate DESC LIMIT 0,100");
 
             while (result.next()) {
                 users.add(fromResultSet(result));
